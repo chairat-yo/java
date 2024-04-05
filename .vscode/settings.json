@@ -1,0 +1,8 @@
+{
+    "files.exclude": {
+        "**/.gitignore": true,
+        "**/.history": true,
+        "**/.vscode": true,
+        "**/*.class": true
+    }
+}
