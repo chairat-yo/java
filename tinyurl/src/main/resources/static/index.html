@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Super Tiny URL</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="./style.css" type="text/css" rel="stylesheet" />
+    <style>
+        
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="myForm">
+            <p>Super Tiny Link</p>
+            <h4> URL</h4>
+            <input id="longUrl" type="text" placeholder="Please Enter URL" />
+            <h4> SHORT URL </h4>
+            <input type="text" id="result" disabled placeholder="Short URL" /></br></br>
+            <input type="submit"/>
+        </form>
+    </div>
+
+</body>
+<script type="text/javascript">
+    const form = document.querySelector("#myForm");
+    const longUrlText = document.querySelector("#longUrl");
+    const shortUrlResult = document.querySelector("#result");
+
+    form.addEventListener("submit", function (event) {
+        // stop form submission
+        event.preventDefault();
+
+        var longUrlString = longUrlText.value;
+        const apiUrl = 'http://localhost:8080/getShortURL?longUrl=' + longUrlString;
+        console.log(longUrlString);
+        console.log(apiUrl);
+        // Make a GET request
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                return response.json()
+            })
+            .then(data => {
+                shortUrlResult.value = data["shortLink"]
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    });
+
+</script>
+
+</html>
