@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 public class TinyUrlController {
     private Logger logger = Logger.getLogger(TinyUrlController.class.getName());
+    @SuppressWarnings("rawtypes")
     private Map<String, String> urlMap = new HashMap();
 
     private static final String URL_PREFIX = "http://localhost:8080//";
