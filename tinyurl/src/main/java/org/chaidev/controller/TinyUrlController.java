@@ -23,7 +23,7 @@ public class TinyUrlController {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private Map<String, String> urlMap = new HashMap();
 
-    private static final String URL_PREFIX = "http://localhost:8080//";
+    private static final String URL_PREFIX = "http://cc.sl:8080/|";
     @GetMapping("/getShortURL")
     public ResponseEntity<String> getShortURL(@RequestParam String longUrl) {
         final HttpHeaders httpHeaders= new HttpHeaders();
@@ -31,8 +31,8 @@ public class TinyUrlController {
         String randomID = getRandomUUID();
         String shortUrlString = URL_PREFIX + randomID;
         urlMap.put(randomID, longUrl);
+        logger.info("put " + randomID + " with " + longUrl);
         return new ResponseEntity<String>("{\"shortLink\": \"" + shortUrlString + "\"}", httpHeaders, HttpStatus.OK);
-
     }
 
     @GetMapping("/getFullURL")
@@ -42,9 +42,9 @@ public class TinyUrlController {
         response.sendRedirect(urlMap.get(encodedURL));
     }
 
-    @GetMapping(value = "//{regex:.*}")
+    @GetMapping(value = "/|{regex:.*}")
     public void redirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String keyToURL = request.getRequestURI().substring(2);
+        String keyToURL = request.getRequestURI().substring(4);
         logger.info("redirect....." + keyToURL);
         response.sendRedirect("/getFullURL?encodedURL=" + keyToURL);
     }
