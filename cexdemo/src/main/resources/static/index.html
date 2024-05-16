@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Super Tiny URL</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="./style.css" type="text/css" rel="stylesheet" />
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 2px solid rgb(140 140 140);
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            width: 50%;
+        }
+
+        caption {
+            caption-side: bottom;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .main {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        thead,
+        tfoot {
+            background-color: rgb(228 240 245);
+        }
+
+        th,
+        td {
+            border: 1px solid rgb(160 160 160);
+            padding: 8px 10px;
+        }
+
+        td:last-of-type {
+            text-align: center;
+        }
+
+        tbody>tr:nth-of-type(even) {
+            background-color: rgb(237 238 242);
+        }
+
+        tfoot th {
+            text-align: right;
+        }
+
+        tfoot td {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <table>
+            <caption>
+                CEX Demo
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Bid Amount</th>
+                    <th scope="col">Bid</th>
+                    <th scope="col">Offer</th>
+                    <th scope="col">Offer Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="bid1_amount"></td>
+                    <td id="bid1"></td>
+                    <td id="offer1"></td>
+                    <td id="offer1_amount"></td>
+                </tr>
+                <tr>
+                    <td id="bid2_amount"></td>
+                    <td id="bid2"></td>
+                    <td id="offer2"></td>
+                    <td id="offer2_amount"></td>
+                </tr>
+                <tr>
+                    <td id="bid3_amount"></td>
+                    <td id="bid3"></td>
+                    <td id="offer3"></td>
+                    <td id="offer3_amount"></td>
+                </tr>
+                <tr>
+                    <td id="bid4_amount"></td>
+                    <td id="bid4"></td>
+                    <td id="offer4"></td>
+                    <td id="offer4_amount"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="container">
+
+            <form id="buysell">
+                Price: <input type="text" id="price_text"/>
+                Amount: <input type="text" id="amount_text"/>
+                <input type="button" value="Buy/Sell" id="order_button"/>
+            </form>
+        </div>
+    </div>
+    <div class="nav">
+        <a href="...">Trade</a>|<a href="...">Market</a>|<a href="...">Transfer</a>|
+
+    </div>
+</body>
+<script type="text/javascript">
+    const bid1 = document.querySelector("#bid1");
+    const bid2 = document.querySelector("#bid2");
+    const bid3 = document.querySelector("#bid3");
+    const bid4 = document.querySelector("#bid4");
+
+    const bid1_amount = document.querySelector("#bid1_amount");
+    const bid2_amount = document.querySelector("#bid2_amount");
+    const bid3_amount = document.querySelector("#bid3_amount");
+    const bid4_amount = document.querySelector("#bid4_amount");
+
+    const offer1 = document.querySelector("#offer1");
+    const offer2 = document.querySelector("#offer2");
+    const offer3 = document.querySelector("#offer3");
+    const offer4 = document.querySelector("#offer4");
+
+    const offer1_amount = document.querySelector("#offer1_amount");
+    const offer2_amount = document.querySelector("#offer2_amount");
+    const offer3_amount = document.querySelector("#offer3_amount");
+    const offer4_amount = document.querySelector("#offer4_amount");
+
+    const price_text = document.querySelector("#price_text");
+    const amount_text = document.querySelector("#amount_text");
+
+    const order_button = document.querySelector("#order_button");
+
+    window.onload = function() {
+        event.preventDefault();
+        setInterval(fetchBidPrices, 1000);
+        setInterval(fetchOfferPrices, 1000);
+    };
+
+    // form.addEventListener("submit", function (event) {
+    //     // stop form submission  
+    // });
+
+    order_button.addEventListener("click", function(event) {
+        alert("Order");
+    })
+    function fetchBidPrices() {
+        const bidOrderApi = 'http://localhost:8080/getBid?orders=4';
+
+        // Make a GET request
+        fetch(bidOrderApi)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log("bid:" + Object.values(data)[0].price);
+                var prices = Object.values(data);
+                bid4.innerHTML = prices[0].price;
+                bid3.innerHTML = prices[1].price;
+                bid2.innerHTML = prices[2].price;
+                bid1.innerHTML = prices[3].price;
+                if (price_text.value.length == 0) {
+                    price_text.value = prices[3].price;
+                }
+
+                bid4_amount.innerHTML = prices[0].amount;
+                bid3_amount.innerHTML = prices[1].amount;
+                bid2_amount.innerHTML = prices[2].amount;
+                bid1_amount.innerHTML = prices[3].amount;
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function fetchOfferPrices() {
+        const offerOrderApi = 'http://localhost:8080/getOffer?orders=4';
+
+        // Make a GET request
+        fetch(offerOrderApi)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                //console.log("offer:" + data);
+                var prices = Object.values(data);
+
+                offer1.innerHTML = prices[0].price;
+                offer2.innerHTML = prices[1].price;
+                offer3.innerHTML = prices[2].price;
+                offer4.innerHTML = prices[3].price;
+
+                offer1_amount.innerHTML = prices[0].amount;
+                offer2_amount.innerHTML = prices[1].amount;
+                offer3_amount.innerHTML = prices[2].amount;
+                offer4_amount.innerHTML = prices[3].amount;
+                // offer1.innerHTML = offer1.innerHTML.replace(prices[0].price);
+                // offer2.innerHTML = offer2.innerHTML.replace(prices[1].price);
+                // offer3.innerHTML = offer3.innerHTML.replace(prices[2].price);
+                // offer4.innerHTML = offer4.innerHTML.replace(prices[3].price);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+</script>
+
+</html>
